@@ -43,12 +43,14 @@ export class OrganizationPlansComponent implements OnInit {
   @Input() providerId: string;
   @Output() onSuccess = new EventEmitter();
   @Output() onCanceled = new EventEmitter();
+  @Output() onTrialBillingSuccess = new EventEmitter<string>();
 
   loading = true;
   selfHosted = false;
   productTypes = ProductType;
   formPromise: Promise<any>;
   singleOrgPolicyBlock = false;
+  isInTrialFlow = false;
   discount = 0;
 
   formGroup = this.formBuilder.group({
@@ -329,8 +331,13 @@ export class OrganizationPlansComponent implements OnInit {
 
         await this.apiService.refreshIdentityToken();
         await this.syncService.fullSync(true);
-        if (!this.acceptingSponsorship) {
+
+        if (!this.acceptingSponsorship && !this.isInTrialFlow) {
           this.router.navigate(["/organizations/" + orgId]);
+        }
+
+        if (this.isInTrialFlow) {
+          this.onTrialBillingSuccess.emit(orgId);
         }
 
         return orgId;

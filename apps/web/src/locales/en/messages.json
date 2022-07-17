@@ -1825,6 +1825,9 @@
   "billingInformation": {
     "message": "Billing Information"
   },
+  "billingTrialSubLabel": {
+    "message": "Your payment method will not be charged during the 7 day free trial."
+  },
   "creditCard": {
     "message": "Credit Card"
   },

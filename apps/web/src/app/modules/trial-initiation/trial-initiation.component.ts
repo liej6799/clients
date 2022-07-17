@@ -5,8 +5,11 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { ProductType } from "@bitwarden/common/enums/productType";
+import { BillingSourceResponse } from "@bitwarden/common/models/response/billingResponse";
 
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
@@ -18,8 +21,11 @@ export class TrialInitiationComponent implements OnInit {
   email = "";
   org = "teams";
   orgInfoSubLabel = "";
+  orgId = "";
+  billingSubLabel = "";
   plan: PlanType;
   product: ProductType;
+  billingDetails: BillingSourceResponse;
   @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
@@ -30,7 +36,9 @@ export class TrialInitiationComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private titleCasePipe: TitleCasePipe
+    private titleCasePipe: TitleCasePipe,
+    private apiService: ApiService,
+    private i18nService: I18nService
   ) {}
 
   ngOnInit(): void {
@@ -63,12 +71,33 @@ export class TrialInitiationComponent implements OnInit {
     } else if (event.previouslySelectedIndex === 1) {
       this.orgInfoSubLabel = this.orgInfoFormGroup.controls.name.value;
     }
+
+    //set billing sub label
+    if (event.selectedIndex === 2) {
+      this.billingSubLabel = this.i18nService.t("billingTrialSubLabel");
+    }
+
+    if (event.previouslySelectedIndex === 2) {
+      this.billingSubLabel = this.billingDetails?.description;
+    }
   }
 
   createdAccount(email: string) {
     this.email = email;
     this.orgInfoFormGroup.get("email")?.setValue(email);
     this.verticalStepper.next();
+  }
+
+  billingSuccess(orgId: string) {
+    this.orgId = orgId;
+    //make billing api call here
+    this.getBillingDetails();
+    this.verticalStepper.next();
+  }
+
+  async getBillingDetails() {
+    const billingDetails = await this.apiService.getUserBillingPayment();
+    this.billingDetails = billingDetails.paymentSource;
   }
 
   previousStep() {

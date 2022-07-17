@@ -58,6 +58,7 @@ export class BillingComponent extends OrganizationPlansComponent {
       plan: this.plan,
       product: this.product,
     });
+    this.isInTrialFlow = true;
     await super.ngOnInit();
   }
 
