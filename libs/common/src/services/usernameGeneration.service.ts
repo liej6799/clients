@@ -294,8 +294,6 @@ export class UsernameGenerationService implements BaseUsernameGenerationService 
     email: string,
     website: string
   ): Promise<string> {
-    console.log(domain);
-    console.log(email);
     if (domain == null || domain === "" || email == null || email === "") {
       throw "Invalid iCloud HME Email / Domain.";
     }
