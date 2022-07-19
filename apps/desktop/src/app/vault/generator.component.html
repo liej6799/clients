@@ -421,6 +421,28 @@
                   />
                 </div>
               </ng-container>
+              <ng-container *ngIf="usernameOptions.forwardedService === 'iCloudHME'">
+                <div class="box-content-row" appBoxRow>
+                  <label for="iCloudHME-email">{{ "email" | i18n }}</label>
+                  <input
+                    id="iCloudHME-email"
+                    type="text"
+                    name="iCloudHMEEmail"
+                    [(ngModel)]="usernameOptions.forwardediCloudHMEEmail"
+                    (blur)="saveUsernameOptions()"
+                  />
+                </div>
+                <div class="box-content-row" appBoxRow>
+                  <label for="iCloudHME-domain">{{ "domainName" | i18n }}</label>
+                  <input
+                    id="iCloudHME-domain"
+                    type="text"
+                    name="iCloudHMEDomain"
+                    [(ngModel)]="usernameOptions.forwardediCloudHMEDomain"
+                    (blur)="saveUsernameOptions()"
+                  />
+                </div>
+              </ng-container>
             </div>
           </div>
           <div class="box" *ngIf="usernameOptions.type === 'subaddress'" [hidden]="!showOptions">
